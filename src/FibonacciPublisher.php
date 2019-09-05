@@ -13,32 +13,21 @@ class FibonacciPublisher extends AbstractSubscribePublisher
 
     public function execute(): void
     {
-        $msg = new AMQPMessage(rand(1, 1000));
-        $this->getChanel()->basic_publish($msg, '', self::$chanel);
+        for ($counter = 0; $counter < $this->getIteration(); $counter++) {
+            $msg = new AMQPMessage($this->fibonacci($counter));
+            $this->getChanel()->basic_publish($msg, '', self::$chanel);
+            usleep($this->getTimeout());
+        }
     }
 
-
-
-
-
-//    function fibonacci ($from, $to)
-//    {
-//        $a = 0;
-//        $b = 1;
-//        $tmp;
-//        while( $to > 0 ) {
-//            if( $from > 0 ){
-//                $from--;
-//            } else {
-//                yield $a;
-//            }
-//            $tmp = $a + $b;
-//            $a = $b;
-//            $b = $tmp;
-//            $to--;
-//        }
-//    }
-//foreach( fibonacci(10, 20) as $fib ) {
-//echo $fib." "; // prints "55 89 144 233 377 610 987 1597 2584 4181 "
-//}
+    private function fibonacci($number): int
+    {
+        if ($number == 0) {
+            return 0;
+        } else if ($number == 1) {
+            return 1;
+        } else {
+            return ($this->fibonacci($number-1) + $this->fibonacci($number-2));
+        }
+    }
 }

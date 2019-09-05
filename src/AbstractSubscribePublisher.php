@@ -39,8 +39,6 @@ abstract class AbstractSubscribePublisher implements CommandInterface
             $this->config['amqpPassword']
         );
         $this->chanel = $this->connection->channel();
-
-        var_dump(static::$chanel);
         $this->getChanel()->queue_declare(static::$chanel, false, false, false, false);
     }
 

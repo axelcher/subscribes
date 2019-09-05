@@ -5,6 +5,7 @@ namespace App;
 
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Message\AMQPMessage;
 
 abstract class AbstractSubscribeConsumer implements CommandInterface
 {
@@ -51,5 +52,33 @@ abstract class AbstractSubscribeConsumer implements CommandInterface
     public function getDB(): \PDO
     {
         return $this->db;
+    }
+
+    public function startListener(): void
+    {
+        $this->getChanel()->basic_consume(static::$chanel, '', false, true, false, false, [$this, 'registerSubscriber']);
+
+        while ($this->getChanel()->is_consuming()) {
+            $this->getChanel()->wait();
+        }
+    }
+
+    public function registerSubscriber(AMQPMessage $msg): void
+    {
+        $increment = $msg->body;
+        $this->getDB()->exec('START TRANSACTION');
+
+        $query = $this->getDB()->prepare("SELECT * FROM test LIMIT 1 FOR UPDATE");
+        $query->execute();
+        $row = $query->fetch();
+        $data = [
+            'sum' => (int)$row['sum'] + (int)$increment,
+            static::$counterName => (int)$row[static::$counterName] + 1,
+            'id' => (int)$row['id'],
+        ];
+
+        $sql = "UPDATE test SET sum=:sum, ". static::$counterName  ."=:". static::$counterName  ." WHERE id=:id";
+        $this->getDB()->prepare($sql)->execute($data);
+        $this->getDB()->exec('COMMIT');
     }
 }
