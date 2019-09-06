@@ -9,5 +9,7 @@ sudo docker-compose exec php bash
 sh ./bin/init.sh
 
 4. Запуск с консоли генераторов подписчиков
+
 php ./bin/console.php FibonacciPublisher <количество> <время задержки>
+
 php ./bin/console.php PrimePublisher <количество> <время задержки>
