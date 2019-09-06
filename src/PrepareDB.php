@@ -28,7 +28,7 @@ class PrepareDB implements CommandInterface
 
             $sql ="CREATE TABLE IF NOT EXISTS " . $this->config['tableName'] . " (
                 id INT( 11 ) AUTO_INCREMENT PRIMARY KEY,
-                `sum` INT NOT NULL,
+                `sum` TEXT NOT NULL,
                 `count_fib` INT NOT NULL,
                 `count_prime` INT NOT NULL) ENGINE=InnoDB CHARSET=utf8" ;
             $conn->exec($sql);
@@ -38,7 +38,7 @@ class PrepareDB implements CommandInterface
             if (!$query->fetch()) {
                 $sql = "INSERT INTO " . $this->config['tableName'] . " (`sum`, `count_fib`, `count_prime`) VALUES (?,?,?)";
                 $stmt= $conn->prepare($sql);
-                $stmt->execute([0, 0, 0]);
+                $stmt->execute(['0', 0, 0]);
             }
         } catch (\Throwable $e) {
             echo $e->getMessage();

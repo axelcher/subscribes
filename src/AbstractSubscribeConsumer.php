@@ -72,7 +72,7 @@ abstract class AbstractSubscribeConsumer implements CommandInterface
         $query->execute();
         $row = $query->fetch();
         $data = [
-            'sum' => (int)$row['sum'] + (int)$increment,
+            'sum' => bcadd($row['sum'],$increment),
             static::$counterName => (int)$row[static::$counterName] + 1,
             'id' => (int)$row['id'],
         ];

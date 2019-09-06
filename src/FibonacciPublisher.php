@@ -20,14 +20,14 @@ class FibonacciPublisher extends AbstractSubscribePublisher
         }
     }
 
-    private function fibonacci($number): int
+    private function fibonacci(int $number): string
     {
         if ($number == 0) {
             return 0;
         } else if ($number == 1) {
             return 1;
         } else {
-            return ($this->fibonacci($number-1) + $this->fibonacci($number-2));
+            return bcadd($this->fibonacci(bcsub($number, 1)), $this->fibonacci(bcsub($number, 2)));
         }
     }
 }

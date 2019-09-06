@@ -14,7 +14,8 @@ class PrimePublisher extends AbstractSubscribePublisher
     {
         $number = 2;
         $maxIteration = 0;
-        while ($maxIteration < $this->getIteration()) {
+        $limit = $this->getIteration();
+        while ($maxIteration < $limit) {
             if ($this->isPrime($number)) {
                 $msg = new AMQPMessage($number);
                 $this->getChanel()->basic_publish($msg, '', self::$chanel);
