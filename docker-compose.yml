@@ -1,25 +1,18 @@
-# Версия docker-compose
 version: '2'
-# Список наших сервисов (контейнеров)
 services:
   php:
-    # у нас свой образ для PHP, указываем путь к нему и говорим что его надо собрать
     build: .
-    # этот образ будет общаться с mysql
     links:
       - mysql
       - rabbitmq
-    # монтируем директорию с проектами
     volumes:
       - .:/app
   mysql:
     image: mysql:5.7
     ports:
       - 127.0.0.2:3306:3306
-    #command: "php ./bin/console.php FibonacciGenerator 4 88"
     volumes:
       - ./mysql:/var/lib/mysql
-    # задаем пароль для root пользователя
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: subscribe
